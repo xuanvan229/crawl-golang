@@ -4,8 +4,8 @@ package main
 
 import (
 	"github.com/xuanvan229/crawl-golang/pkg/config"
-	"github.com/xuanvan229/crawl-golang/pkg/crawl"
 	"github.com/xuanvan229/crawl-golang/pkg/model"
+	"github.com/xuanvan229/crawl-golang/pkg/router"
 )
 
 func main() {
@@ -13,7 +13,10 @@ func main() {
 	config.LoadEnv()
 	model.InitDB()
 
-	crawl.CrawlLazada()
+	//crawl.CrawlLazada()
+
+	r := router.InitRouters()
+	r.Run(":8080")
 
 	//
 	//// create chrome instance
