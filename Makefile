@@ -4,3 +4,6 @@ run:
 
 up:
 	docker-compose up -d
+
+crawl:
+	go run cmd/crawl.go

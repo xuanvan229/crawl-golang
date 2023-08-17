@@ -16,26 +16,26 @@ var lazada []model.Lazada = []model.Lazada{
 	//	Url:      "https://www.lazada.vn/dien-thoai-di-dong/",
 	//	Category: "Điện thoại di động",
 	//},
-	//{
-	//	Url:      "https://www.lazada.vn/may-tinh-bang/",
-	//	Category: "Máy tính bảng",
-	//},
-	//{
-	//	Url:      "https://www.lazada.vn/laptop/",
-	//	Category: "Laptop",
-	//},
-	//{
-	//	Url:      "https://www.lazada.vn/may-tinh-de-ban-va-phu-kien/",
-	//	Category: "Máy tính để bàn và phụ kiện",
-	//},
-	//{
-	//	Url:      "https://www.lazada.vn/am-thanh/",
-	//	Category: "Âm thanh",
-	//},
-	//{
-	//	Url:      "https://www.lazada.vn/camera-giam-sat-2/",
-	//	Category: "Camera giám sát",
-	//},
+	{
+		Url:      "https://www.lazada.vn/may-tinh-bang/",
+		Category: "Máy tính bảng",
+	},
+	{
+		Url:      "https://www.lazada.vn/laptop/",
+		Category: "Laptop",
+	},
+	{
+		Url:      "https://www.lazada.vn/may-tinh-de-ban-va-phu-kien/",
+		Category: "Máy tính để bàn và phụ kiện",
+	},
+	{
+		Url:      "https://www.lazada.vn/am-thanh/",
+		Category: "Âm thanh",
+	},
+	{
+		Url:      "https://www.lazada.vn/camera-giam-sat-2/",
+		Category: "Camera giám sát",
+	},
 	{
 		Url:      "https://www.lazada.vn/may-anh-may-quay-phim/",
 		Category: "Máy ảnh, máy quay phim",
@@ -63,7 +63,8 @@ func CrawlLazada() {
 		chromedp.Flag("headless", false),
 		chromedp.Flag("start-fullscreen", false),
 		chromedp.Flag("enable-automation", false),
-		chromedp.Flag("disable-extensions", false),
+		//chromedp.Flag("blink-settings", "imagesEnabled=false"),
+		chromedp.Flag("disable-extensions", true),
 		chromedp.Flag("remote-debugging-port", "9222"),
 	)
 	allocCtx, _ := chromedp.NewExecAllocator(context.Background(), opts...)
@@ -76,7 +77,7 @@ func CrawlLazada() {
 	defer cancel()
 
 	// create a timeout
-	ctx, cancel = context.WithTimeout(ctx, 2000*time.Second)
+	ctx, cancel = context.WithTimeout(ctx, 30000*time.Second)
 	defer cancel()
 
 	// navigate to a page, wait for an element, click
@@ -96,6 +97,16 @@ func CrawlLazada() {
 			fmt.Println("pageUrl", pageUrl)
 			task := chromedp.Tasks{
 				chromedp.Navigate(pageUrl),
+				//chromedp.Evaluate(`window.scrollTo(0, 200)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 400)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 600)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 800)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 1000)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 1200)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 1400)`, nil),
+				//chromedp.Evaluate(`window.scrollTo(0, 1600)`, nil),
+
+				chromedp.Evaluate(`window.scrollTo(0, document.documentElement.scrollHeight)`, nil),
 				chromedp.WaitVisible(`._17mcb`),
 				chromedp.Nodes(".Bm3ON", &nodes, chromedp.ByQueryAll),
 			}
@@ -105,10 +116,10 @@ func CrawlLazada() {
 				log.Fatal(err)
 			}
 
-			fmt.Println("nodes", len(nodes))
+			//fmt.Println("nodes", len(nodes))
 
-			for index, node := range nodes {
-				fmt.Println("index", index)
+			for _, node := range nodes {
+				//fmt.Println("node ------>", node)
 				chromedp.Run(ctx,
 					chromedp.AttributeValue("a", "href", &href, nil, chromedp.ByQuery, chromedp.FromNode(node)),
 					chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
@@ -116,6 +127,8 @@ func CrawlLazada() {
 					chromedp.Text(".ooOxS", &price, chromedp.ByQuery, chromedp.FromNode(node)),
 					//chromedp.Text("._1cEkb", &sold, chromedp.ByQuery, chromedp.FromNode(node)),
 				)
+
+				//image = CrawlDetailProduct(href, ctx)
 
 				product := model.Product{
 					ID:        uuid.New(),
@@ -127,10 +140,19 @@ func CrawlLazada() {
 					TotalSold: sold,
 					ShopName:  "lazada",
 				}
+
 				products = append(products, product)
 			}
 
-			fmt.Println("products", ":  =>", products)
+			for index, product := range products {
+				image = CrawlDetailProduct(product.Url)
+				fmt.Println("image", image)
+				if image != "" {
+					product.Image = image
+				}
+				products[index] = product
+
+			}
 
 			result, err := model.InsertProduct(products)
 			fmt.Println("result", result)
@@ -142,4 +164,56 @@ func CrawlLazada() {
 
 	}
 
+}
+
+func CrawlDetailProduct(pageUrl string) string {
+
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.Flag("headless", false),
+		chromedp.Flag("start-fullscreen", false),
+		chromedp.Flag("enable-automation", false),
+		chromedp.Flag("blink-settings", "imagesEnabled=false"),
+		chromedp.Flag("disable-extensions", true),
+		chromedp.Flag("remote-debugging-port", "9222"),
+	)
+	allocCtx, _ := chromedp.NewExecAllocator(context.Background(), opts...)
+
+	ctx, cancel := chromedp.NewContext(
+		allocCtx,
+		chromedp.WithLogf(log.Printf),
+		// chromedp.WithDebugf(log.Printf),
+	)
+	defer cancel()
+
+	// create a timeout
+	ctx, cancel = context.WithTimeout(ctx, 30000*time.Second)
+	defer cancel()
+
+	var nodes []*cdp.Node
+	var image string
+
+	pageUrl = "https:" + pageUrl
+	task := chromedp.Tasks{
+		chromedp.Navigate(pageUrl),
+		chromedp.WaitVisible(`.gallery-preview-panel__image`),
+		chromedp.Nodes(".gallery-preview-panel__content", &nodes, chromedp.ByQueryAll),
+	}
+
+	err := chromedp.Run(ctx, task)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for index, node := range nodes {
+		fmt.Println("index", index, node)
+		err := chromedp.Run(ctx,
+			chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
+		)
+		if err != nil {
+			fmt.Println("err", err)
+			return ""
+		}
+	}
+	chromedp.Stop()
+	return image
 }

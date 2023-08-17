@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/xuanvan229/crawl-golang/pkg/model"
 	"math"
@@ -9,6 +10,7 @@ import (
 )
 
 func GetProducts(c *gin.Context) {
+	fmt.Print("check heheheheheheh")
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
@@ -22,7 +24,7 @@ func GetProducts(c *gin.Context) {
 		return
 	}
 
-	const productPerPage = 15
+	const productPerPage = 80
 	pageCount := int(math.Ceil(float64(productCount) / float64(productPerPage)))
 	if pageCount == 0 {
 		pageCount = 1
