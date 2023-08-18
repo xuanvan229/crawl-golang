@@ -7,3 +7,6 @@ up:
 
 crawl:
 	go run cmd/crawl.go
+
+fix:
+	go run cmd/fixCrawl.go

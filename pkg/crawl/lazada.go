@@ -16,26 +16,26 @@ var lazada []model.Lazada = []model.Lazada{
 	//	Url:      "https://www.lazada.vn/dien-thoai-di-dong/",
 	//	Category: "Điện thoại di động",
 	//},
-	{
-		Url:      "https://www.lazada.vn/may-tinh-bang/",
-		Category: "Máy tính bảng",
-	},
-	{
-		Url:      "https://www.lazada.vn/laptop/",
-		Category: "Laptop",
-	},
-	{
-		Url:      "https://www.lazada.vn/may-tinh-de-ban-va-phu-kien/",
-		Category: "Máy tính để bàn và phụ kiện",
-	},
-	{
-		Url:      "https://www.lazada.vn/am-thanh/",
-		Category: "Âm thanh",
-	},
-	{
-		Url:      "https://www.lazada.vn/camera-giam-sat-2/",
-		Category: "Camera giám sát",
-	},
+	//{
+	//	Url:      "https://www.lazada.vn/may-tinh-bang/",
+	//	Category: "Máy tính bảng",
+	//},
+	//{
+	//	Url:      "https://www.lazada.vn/laptop/",
+	//	Category: "Laptop",
+	//},
+	//{
+	//	Url:      "https://www.lazada.vn/may-tinh-de-ban-va-phu-kien/",
+	//	Category: "Máy tính để bàn và phụ kiện",
+	//},
+	//{
+	//	Url:      "https://www.lazada.vn/am-thanh/",
+	//	Category: "Âm thanh",
+	//},
+	//{
+	//	Url:      "https://www.lazada.vn/camera-giam-sat-2/",
+	//	Category: "Camera giám sát",
+	//},
 	{
 		Url:      "https://www.lazada.vn/may-anh-may-quay-phim/",
 		Category: "Máy ảnh, máy quay phim",
@@ -97,15 +97,6 @@ func CrawlLazada() {
 			fmt.Println("pageUrl", pageUrl)
 			task := chromedp.Tasks{
 				chromedp.Navigate(pageUrl),
-				//chromedp.Evaluate(`window.scrollTo(0, 200)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 400)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 600)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 800)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 1000)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 1200)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 1400)`, nil),
-				//chromedp.Evaluate(`window.scrollTo(0, 1600)`, nil),
-
 				chromedp.Evaluate(`window.scrollTo(0, document.documentElement.scrollHeight)`, nil),
 				chromedp.WaitVisible(`._17mcb`),
 				chromedp.Nodes(".Bm3ON", &nodes, chromedp.ByQueryAll),
@@ -125,11 +116,9 @@ func CrawlLazada() {
 					chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
 					chromedp.Text(".RfADt", &name, chromedp.ByQuery, chromedp.FromNode(node)),
 					chromedp.Text(".ooOxS", &price, chromedp.ByQuery, chromedp.FromNode(node)),
-					//chromedp.Text("._1cEkb", &sold, chromedp.ByQuery, chromedp.FromNode(node)),
 				)
 
 				//image = CrawlDetailProduct(href, ctx)
-
 				product := model.Product{
 					ID:        uuid.New(),
 					Url:       href,
@@ -169,7 +158,7 @@ func CrawlLazada() {
 func CrawlDetailProduct(pageUrl string) string {
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
-		chromedp.Flag("headless", false),
+		chromedp.Flag("headless", true),
 		chromedp.Flag("start-fullscreen", false),
 		chromedp.Flag("enable-automation", false),
 		chromedp.Flag("blink-settings", "imagesEnabled=false"),
@@ -207,7 +196,7 @@ func CrawlDetailProduct(pageUrl string) string {
 	for index, node := range nodes {
 		fmt.Println("index", index, node)
 		err := chromedp.Run(ctx,
-			chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
+			chromedp.AttributeValue(".gallery-preview-panel__image", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
 		)
 		if err != nil {
 			fmt.Println("err", err)

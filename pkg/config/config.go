@@ -12,6 +12,7 @@ type Config struct {
 	DBHost     string
 	DBPort     string
 	DBName     string
+	Host       string
 }
 
 var Setting *Config
@@ -26,11 +27,13 @@ func LoadEnv() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
+	host := os.Getenv("HOST")
 	Setting = &Config{
 		DBUsername: dbUserName,
 		DBPassword: dbPassword,
 		DBHost:     dbHost,
 		DBPort:     dbPort,
 		DBName:     dbName,
+		Host:       host,
 	}
 }
