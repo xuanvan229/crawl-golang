@@ -10,3 +10,6 @@ crawl:
 
 fix:
 	go run cmd/fixCrawl.go
+
+build:
+	go build cmd/main.go
