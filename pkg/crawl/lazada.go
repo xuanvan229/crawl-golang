@@ -94,7 +94,6 @@ func CrawlLazada() {
 			var price, name, href, image, sold string
 			var products []model.Product
 
-			fmt.Println("pageUrl", pageUrl)
 			task := chromedp.Tasks{
 				chromedp.Navigate(pageUrl),
 				chromedp.Evaluate(`window.scrollTo(0, document.documentElement.scrollHeight)`, nil),
@@ -107,10 +106,7 @@ func CrawlLazada() {
 				log.Fatal(err)
 			}
 
-			//fmt.Println("nodes", len(nodes))
-
 			for _, node := range nodes {
-				//fmt.Println("node ------>", node)
 				chromedp.Run(ctx,
 					chromedp.AttributeValue("a", "href", &href, nil, chromedp.ByQuery, chromedp.FromNode(node)),
 					chromedp.AttributeValue("img", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
@@ -118,7 +114,6 @@ func CrawlLazada() {
 					chromedp.Text(".ooOxS", &price, chromedp.ByQuery, chromedp.FromNode(node)),
 				)
 
-				//image = CrawlDetailProduct(href, ctx)
 				product := model.Product{
 					ID:        uuid.New(),
 					Url:       href,
@@ -135,7 +130,6 @@ func CrawlLazada() {
 
 			for index, product := range products {
 				image = CrawlDetailProduct(product.Url)
-				fmt.Println("image", image)
 				if image != "" {
 					product.Image = image
 				}
@@ -143,8 +137,7 @@ func CrawlLazada() {
 
 			}
 
-			result, err := model.InsertProduct(products)
-			fmt.Println("result", result)
+			_, err = model.InsertProduct(products)
 			if err != nil {
 				panic(err)
 				return
@@ -193,13 +186,11 @@ func CrawlDetailProduct(pageUrl string) string {
 		log.Fatal(err)
 	}
 
-	for index, node := range nodes {
-		fmt.Println("index", index, node)
+	for _, node := range nodes {
 		err := chromedp.Run(ctx,
 			chromedp.AttributeValue(".gallery-preview-panel__image", "src", &image, nil, chromedp.ByQuery, chromedp.FromNode(node)),
 		)
 		if err != nil {
-			fmt.Println("err", err)
 			return ""
 		}
 	}

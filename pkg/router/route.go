@@ -25,7 +25,7 @@ func InitRouters() *gin.Engine {
 	products := r.Group("/products")
 	{
 		products.GET("/", handler.GetProducts)
-		//products.POST("/", handler.CreateProduct)
+		products.GET("/category/", handler.GetCategories)
 		//products.PUT("/:id", handler.UpdateProduct)
 		//products.DELETE("/:id", handler.DeleteProduct)
 	}
