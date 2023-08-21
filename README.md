@@ -1,7 +1,5 @@
 # GOLANG CRAWLING ECOMMERCE
 
--------------------
-
 ## WHAT IS THIS?
 This is a simple crawler that crawls the e-commerce website and stores the data in the database.
 
@@ -28,6 +26,7 @@ This is a simple crawler that crawls the e-commerce website and stores the data 
 ## FrontEnd (ReactJS)
 
 Repository: https://github.com/xuanvan229?tab=repositories
+
 Demo link: http://104.248.126.61/
 
 ## HOW TO IMPROVE?
