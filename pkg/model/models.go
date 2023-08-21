@@ -17,7 +17,7 @@ func InitDB() {
 	}
 	db = DB
 
-	err = db.AutoMigrate(Product{})
+	err = AutoMigrate(Product{}, CategoryLazada{})
 
 	if err != nil {
 		panic(err)

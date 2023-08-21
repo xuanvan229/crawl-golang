@@ -24,7 +24,7 @@ func GetProducts(c *gin.Context) {
 		return
 	}
 
-	const productPerPage = 80
+	const productPerPage = 20
 	pageCount := int(math.Ceil(float64(productCount) / float64(productPerPage)))
 	if pageCount == 0 {
 		pageCount = 1

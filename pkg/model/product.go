@@ -15,6 +15,29 @@ type Product struct {
 	ShopName  string    `json:"shop_name"`
 }
 
+type CategoryLazada struct {
+	ID      uuid.UUID `json:"id" gorm:"type:uuid;primaryKey"`
+	Url     string    `json:"url"`
+	Crawled bool      `json:"crawled"`
+}
+
+func InsertCategory(categories []CategoryLazada) (*[]CategoryLazada, error) {
+	return &categories, db.Create(&categories).Error
+}
+
+func UpdateCategory(category CategoryLazada) (*CategoryLazada, error) {
+	return &category, db.Save(&category).Error
+}
+
+func GetCategoryNotCrawled() (*[]CategoryLazada, error) {
+	var categories []CategoryLazada
+	err := db.Where("crawled = ?", false).Find(&categories).Error
+	if err != nil {
+		return nil, err
+	}
+	return &categories, nil
+}
+
 func InsertProduct(product []Product) (*[]Product, error) {
 	return &product, db.Create(&product).Error
 }
@@ -87,7 +110,7 @@ func GetAllProducts(productPerPage int, offset int, name string, category string
 
 func GetProductWrongImage() (*[]Product, error) {
 	var products []Product
-	name := "TB13MLwbOLaK1RjSZFxXXamPFXa"
+	name := "data:image/png;base6"
 	err := db.Where("image ILIKE ?", "%"+name+"%").Find(&products).Error
 	if err != nil {
 		return nil, err

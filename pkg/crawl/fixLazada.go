@@ -11,7 +11,10 @@ func FixLazada() {
 	}
 
 	for _, product := range *products {
-		image := CrawlDetailProduct(product.Url)
+		image, err := GetProductImage(product.Url)
+		if err != nil {
+			continue
+		}
 		if image != "" {
 			product.Image = image
 			_, err := model.UpdateProduct(product)
