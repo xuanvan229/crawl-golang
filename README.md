@@ -25,7 +25,7 @@ This is a simple crawler that crawls the e-commerce website and stores the data 
 
 ## FrontEnd (ReactJS)
 
-Repository: https://github.com/xuanvan229?tab=repositories
+Repository: https://github.com/xuanvan229/crawl-ecommerce-fe
 
 Demo link: http://104.248.126.61/
 
