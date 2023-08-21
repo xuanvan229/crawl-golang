@@ -10,7 +10,7 @@ This is a simple crawler that crawls the e-commerce website and stores the data 
 4. Run `Make up` to start the database
 5. Run `Make category` to crawl the category data
 6. Run `Make crawl` to crawl the product data
-7. Run `Make fix` to crawl the product image
+7. Run `Make crawl-image` to crawl the product image
 8. Run `Make run` to run the server
 
 ## PROBLEM

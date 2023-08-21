@@ -11,7 +11,7 @@ category:
 crawl:
 	go run cmd/crawl-products.go
 
-fix:
+crawl-image:
 	go run cmd/crawl-product-image.go
 
 build:
