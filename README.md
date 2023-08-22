@@ -13,7 +13,7 @@ This is a simple crawler that crawls the e-commerce website and stores the data 
 7. Run `Make crawl-image` to crawl the product image
 8. Run `Make run` to run the server
 
-## PROBLEM
+## PROBLEMS
 
 1. Lazada has a lot of products, so it takes a lot of time to crawl all the products.
 2. Using chromedp to crawl products page can not get the product's image. Because lazada uses lazy loading to load the image.
