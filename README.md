@@ -23,10 +23,18 @@ This is a simple crawler that crawls the e-commerce website and stores the data 
 
     Solution: I change the coffee shop everyday to crawl the data :)))
 
+
+## NOTE
+
+- When run `Make crawl` to crawl product. It will open a chrome each time to crawl the product list of category. 
+- When you see the chrome open, please don't close it. It will close automatically after it crawls all the products of the category.
+- When you see the captcha modal from lazada. Please close the program and change the coffee shop to run again :)) (Or you can wait, at least 6 hours maybe, for next time).
+
 ## FrontEnd (ReactJS)
 
 Repository: https://github.com/xuanvan229/crawl-ecommerce-fe
 
 Demo link: http://104.248.126.61/
+
 
 ## HOW TO IMPROVE?
